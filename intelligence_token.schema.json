@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/intelligence_token.schema.json",
+  "title": "Intelligence Token (IT) Object",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "token_id",
+    "token_type",
+    "created_at",
+    "title",
+    "purpose",
+    "manifests",
+    "governance",
+    "attribution",
+    "policy_gates"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "token_id": {
+      "type": "string"
+    },
+    "token_type": {
+      "type": "string",
+      "enum": [
+        "transferable_knowledge",
+        "soulbound_identity"
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "manifests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "References to object_manifest IDs."
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "domain",
+        "stewardship",
+        "verification_required"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "e.g., civil engineering professional-society knowledge"
+        },
+        "stewardship": {
+          "type": "string"
+        },
+        "verification_required": {
+          "type": "boolean"
+        },
+        "verification_tier": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "reviewed",
+            "validated",
+            "gold_seal"
+          ],
+          "default": "draft"
+        }
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "required": [
+        "attribution_required",
+        "attribution_fields"
+      ],
+      "properties": {
+        "attribution_required": {
+          "type": "boolean"
+        },
+        "attribution_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "compensation_model_hint": {
+          "type": "string",
+          "description": "Non-binding hint for prototype compensation routing."
+        }
+      }
+    },
+    "policy_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gate_id",
+          "gate_type",
+          "rule",
+          "enforcement"
+        ],
+        "properties": {
+          "gate_id": {
+            "type": "string"
+          },
+          "gate_type": {
+            "type": "string",
+            "enum": [
+              "access_control",
+              "licensing",
+              "privacy",
+              "export_control",
+              "safety",
+              "quality"
+            ]
+          },
+          "rule": {
+            "type": "string"
+          },
+          "enforcement": {
+            "type": "string",
+            "enum": [
+              "block",
+              "warn",
+              "log",
+              "require_human_review"
+            ]
+          }
+        }
+      }
+    },
+    "signatures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "signer",
+          "signature",
+          "signed_at"
+        ],
+        "properties": {
+          "signer": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "signed_at": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
