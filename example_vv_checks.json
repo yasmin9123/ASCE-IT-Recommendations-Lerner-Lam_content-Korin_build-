@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "vv:example_001",
+  "created_at": "2025-12-24T00:00:00.000Z",
+  "scope": "Prototype V&V for IT packaging and vector ingestion.",
+  "checks": [
+    {
+      "check_id": "vv_schema_001",
+      "check_type": "schema",
+      "description": "Validate all JSON objects against schemas.",
+      "method": "Run JSON Schema validation in CI.",
+      "severity": "high"
+    },
+    {
+      "check_id": "vv_hash_001",
+      "check_type": "hash",
+      "description": "Verify content hashes match canonical bytes.",
+      "method": "Recompute SHA-256 and compare.",
+      "severity": "critical"
+    },
+    {
+      "check_id": "vv_prov_001",
+      "check_type": "provenance",
+      "description": "Confirm provenance fields are complete.",
+      "method": "Automated required-field checks + human review.",
+      "severity": "high"
+    },
+    {
+      "check_id": "vv_retr_001",
+      "check_type": "retrieval",
+      "description": "Confirm policy gates filter retrieval results.",
+      "method": "Unit tests for gate filters + audit logs.",
+      "severity": "critical"
+    }
+  ],
+  "acceptance_criteria": [
+    "All required schemas pass validation.",
+    "All hashes verify against canonical content.",
+    "Retrieval respects policy gates and returns attribution metadata."
+  ]
+}
