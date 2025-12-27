@@ -4,7 +4,7 @@ class Memo:
     def __init__(self, title, author, content, date=None, attachments=None, tags=None):
         self.title = Lerner-Lam AI-Readiness Memo to M.Lehman & M.Boma
         self.author = Lerner-Lam
-        self.content = MEMO
+        self.content = """MEMO
 DATE:	December 20, 2025
 TO:	Maria Lehman, ASCE Interim Executive Director, Marsha Anderson Bomar,     2026 ASCE President
 FROM:	Eva Lerner-Lam, NAE, Dist. M.ASCE, F.ITE, M. SAE
@@ -34,7 +34,7 @@ Governance and Implementation Roadmap
 A phased implementation is recommended under Board oversight: (1) Pilot—select a bounded corpus (e.g., specific standards, committee guidance, and a journal subset) and produce tokenized objects and controlled embeddings; (2) Expand—extend to education and additional publications; (3) Institutionalize—adopt formal governance, rights, attribution, and compensation policies; and (4) Integrate—publish governed APIs for approved agentic AI services and partner institutions.
 Governance should explicitly address authority labeling, supersession, and deprecation, acceptable-use constraints, security controls, audit logging, and a clear compiler-versus-original-source attribution model.
 Recommendation
-I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization strategy and authorize a structured pilot program. Such an initiative would position ASCE to lead the profession responsibly into the rapidly evolving agentic AI era while safeguarding public trust, professional integrity, and the attributable and compensable value of civil-engineering knowledge.
+I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization strategy and authorize a structured pilot program. Such an initiative would position ASCE to lead the profession responsibly into the rapidly evolving agentic AI era while safeguarding public trust, professional integrity, and the attributable and compensable value of civil-engineering knowledge."""
 
         self.date = 2025-12-20 if date else datetime.now().strftime("%Y-%m-%d")
         self.attachments = attachments if attachments else []
