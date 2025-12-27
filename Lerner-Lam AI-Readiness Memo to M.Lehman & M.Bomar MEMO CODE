@@ -1,0 +1,31 @@
+from datetime import datetime
+
+class Memo:
+    def __init__(self, title, author, content, date=None, attachments=None, tags=None):
+        self.title = Lerner-Lam AI-Readiness Memo to M.Lehman & M.Boma
+        self.author = Lerner-Lam
+        self.content = I offer this memorandum to present a strategic framework for positioning ASCE as the authoritative steward of civil-engineering intelligence in the AI era. It recommends that ASCE convene and govern a profession-wide Intelligence Token ecosystem—integrating Soulbound Tokens (SBTs) for professional identity and ethical responsibility with transferable Intelligence Tokens (ITs) for authoritative civil-engineering knowledge.
+The strategic objective is to ensure that rapidly emerging agentic AI systems can retrieve civil-engineering guidance in a manner that is attributable, auditable, context-aware, and consistent with the ASCE Code of Ethics, while also enabling transparent attribution and compensation for original sources and institutional stewardship for ASCE.
+        self.date = 2025-12-20 if date else datetime.now().strftime("%Y-%m-%d")
+        self.attachments = attachments if attachments else []
+        self.tags = tags if tags else []
+
+    def update_content(self, new_content):
+        self.content = new_content
+
+    def add_attachment(self, filename):
+        self.attachments.append(filename)
+
+    def add_tag(self, tag):
+        self.tags.append(tag)
+
+    def to_dict(self):
+        """Convert the object into a dictionary for storage in an object store"""
+        return {
+            "title": self.title,
+            "author": self.author,
+            "date": self.date,
+            "content": self.content,
+            "attachments": self.attachments,
+            "tags": self.tags
+        }
