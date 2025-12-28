@@ -2,41 +2,10 @@ from datetime import datetime
 
 class Memo:
     def __init__(self, title, author, content, date=None, attachments=None, tags=None):
-        self.title = Lerner-Lam AI-Readiness Memo to M.Lehman & M.Boma
-        self.author = Lerner-Lam
-        self.content = """MEMO
-DATE:	December 20, 2025
-TO:	Maria Lehman, ASCE Interim Executive Director, Marsha Anderson Bomar,     2026 ASCE President
-FROM:	Eva Lerner-Lam, NAE, Dist. M.ASCE, F.ITE, M. SAE
-RE:	AI-Readiness Strategy for Civil Engineering Intelligence Tokens and AI Governance
-Executive Summary
-I offer this memorandum to present a strategic framework for positioning ASCE as the authoritative steward of civil-engineering intelligence in the AI era. It recommends that ASCE convene and govern a profession-wide Intelligence Token ecosystem—integrating Soulbound Tokens (SBTs) for professional identity and ethical responsibility with transferable Intelligence Tokens (ITs) for authoritative civil-engineering knowledge.
-The strategic objective is to ensure that rapidly emerging agentic AI systems can retrieve civil-engineering guidance in a manner that is attributable, auditable, context-aware, and consistent with the ASCE Code of Ethics, while also enabling transparent attribution and compensation for original sources and institutional stewardship for ASCE.
-Structural Risks of AI to Civil Engineering Practice
-As AI systems increasingly influence planning, design, and policy decisions, civil engineers face systemic risks that extend beyond simple data provenance. Key risks include: (i) loss of attribution and professional accountability; (ii) context stripping and misapplication of engineering judgment; (iii) silent drift of standards and best practices; (iv) blurring of authoritative versus advisory guidance; (v) inability to audit AI-supported decisions; and (vi) erosion of professional credit and economic value.
-Because civil engineering is a licensed, safety-critical profession, these issues directly implicate duty of care, public trust, and the defensibility of engineering decisions in agency, judicial, and public contexts.
-Why ASCE Is the Natural Steward
-ASCE uniquely combines standards authority, ethical governance, institutional neutrality, and cross-sector trust. Unlike vendors, platforms, or single publishers, ASCE’s legitimacy derives from professional stewardship and service to the public interest.
-ASCE already performs core stewardship functions that AI-era governance requires—curation, validation, version control, peer/committee review, and dissemination across codes and standards, journals, books, guidance, and education. Extending these functions into AI-readable Intelligence Tokens is a continuity of ASCE’s mission.
-Intelligence Tokens and Soulbound Tokens
-Intelligence Tokens are governed, AI-readable knowledge objects that represent authoritative civil-engineering content with embedded provenance, applicability constraints, rights, and machine-readable metadata. Soulbound Tokens are a non-transferable subclass of Intelligence Tokens that bind professional identity, licensure context, organizational role, and ethical responsibility to individuals or institutional actors (see Figure 1).
-In this framework, ASCE serves as a compiler and institutional steward for authoritative collective works, while preserving attribution and (where adopted by policy) compensation for individual authors, editors, reviewers, and committees as original sources.
-
-Figure 1. ASCE Intelligence Token Taxonomy. ASCE governs both professional identity (via non-transferable Soulbound Tokens) and authoritative civil-engineering knowledge (via governed Intelligence Tokens), ensuring ethical responsibility, attribution, and auditability in AI-mediated use.
-ASCE Object Store and Vector Store Architecture
-ASCE would operate a canonical Intelligence Token object store and a derived vector store for AI access. The object store contains authoritative, versioned Intelligence Tokens (including applicable Soulbound identity tokens), while the vector store contains semantic embeddings derived only from ASCE-governed tokens.
-AI systems should retrieve governed intelligence rather than ingesting raw documents directly. This approach preserves attribution, contextual integrity, and accountability while enabling fast semantic retrieval. As shown in Figure 2, embedding generation occurs under ASCE control and agentic AI systems access the vector store only through governed retrieval interfaces.
-
-Figure 2. Object Store → Vector Store → Agentic AI Flow. Embedding generation and governed retrieval enforce ASCE control over how AI systems access civil-engineering intelligence, preserving attribution, contextual integrity, and professional accountability.
-Alignment with the ASCE Code of Ethics
-The Intelligence Token framework operationalizes core ASCE ethical principles by making public-safety constraints, authority levels, truthfulness signals, and responsibility chains machine-readable and auditable. In practical terms, this supports: (i) public welfare through applicability constraints; (ii) truthful and objective use through provenance and versioning; (iii) faithful agency through identity binding and accountability; and (iv) professional integrity through attribution and transparent reuse.
-Governance and Implementation Roadmap
-A phased implementation is recommended under Board oversight: (1) Pilot—select a bounded corpus (e.g., specific standards, committee guidance, and a journal subset) and produce tokenized objects and controlled embeddings; (2) Expand—extend to education and additional publications; (3) Institutionalize—adopt formal governance, rights, attribution, and compensation policies; and (4) Integrate—publish governed APIs for approved agentic AI services and partner institutions.
-Governance should explicitly address authority labeling, supersession, and deprecation, acceptable-use constraints, security controls, audit logging, and a clear compiler-versus-original-source attribution model.
-Recommendation
-I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization strategy and authorize a structured pilot program. Such an initiative would position ASCE to lead the profession responsibly into the rapidly evolving agentic AI era while safeguarding public trust, professional integrity, and the attributable and compensable value of civil-engineering knowledge."""
-
-        self.date = 2025-12-20 if date else datetime.now().strftime("%Y-%m-%d")
+        self.title = title
+        self.author = author
+        self.content = content
+        self.date = date if date else datetime.now().strftime("%Y-%m-%d")
         self.attachments = attachments if attachments else []
         self.tags = tags if tags else []
 
@@ -50,7 +19,6 @@ I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization 
         self.tags.append(tag)
 
     def to_dict(self):
-        """Convert the object into a dictionary for storage in an object store"""
         return {
             "title": self.title,
             "author": self.author,
