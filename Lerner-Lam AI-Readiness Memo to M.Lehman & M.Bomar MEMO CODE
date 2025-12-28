@@ -66,3 +66,7 @@ Recommendation
 I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization strategy and authorize a structured pilot program. Such an initiative would position ASCE to lead the profession responsibly into the rapidly evolving agentic AI era while safeguarding public trust, professional integrity, and the attributable and compensable value of civil-engineering knowledge.
 ",
     date="2025-12-20"
+
+# attached photos
+memo.add_attachment("attachments/images/figure1_token_taxonomy.png")
+memo.add_attachment("attachments/images/figure2_object_vector_flow.png")
