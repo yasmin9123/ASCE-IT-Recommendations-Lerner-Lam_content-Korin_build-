@@ -33,7 +33,7 @@ class Memo:
 memo = Memo(
     title="Lerner-Lam AI-Readiness Memo to M.Lehman & M.Bomar",
     author="Eva Lerner-Lam",
-    content="MEMO
+    content="""MEMO
 DATE:	December 20, 2025
 TO:	Maria Lehman, ASCE Interim Executive Director, Marsha Anderson Bomar,     2026 ASCE President
 FROM:	Eva Lerner-Lam, NAE, Dist. M.ASCE, F.ITE, M. SAE
@@ -64,9 +64,14 @@ A phased implementation is recommended under Board oversight: (1) Pilot—select
 Governance should explicitly address authority labeling, supersession, and deprecation, acceptable-use constraints, security controls, audit logging, and a clear compiler-versus-original-source attribution model.
 Recommendation
 I recommend that the ASCE Board of Direction adopt an Intelligence Tokenization strategy and authorize a structured pilot program. Such an initiative would position ASCE to lead the profession responsibly into the rapidly evolving agentic AI era while safeguarding public trust, professional integrity, and the attributable and compensable value of civil-engineering knowledge.
-",
+""",
     date="2025-12-20"
 
 # attached photos
-memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/blob/main/figure%201%20memo.png")
-memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/blob/main/figure%202%20memo.png")
+memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%201%20memo.png")
+memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%202%20memo.png")
+
+#exporting as JSON
+import json
+with open("memo_2025_12_20.json", "w") as f:
+    json.dump(memo.to_dict(), f, indent=2)
