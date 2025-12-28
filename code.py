@@ -49,6 +49,16 @@ memo = Memo(
     date="2025-12-20"
 )
 
+# Add tags
+memo.add_tag("AI Governance")
+memo.add_tag("Civil Engineering")
+memo.add_tag("Intelligence Tokens")
+memo.add_tag("Soulbound Tokens")
+memo.add_tag("Professional Ethics")
+memo.add_tag("2025")
+memo.add_tag("ASCE")
+memo.add_tag("Eva Lerner-Lam")
+
 # Attach images
 memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%201%20memo.png")
 memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%202%20memo.png")
