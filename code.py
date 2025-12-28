@@ -1,5 +1,6 @@
-#this is a class definition 
+# class definition
 from datetime import datetime
+import json
 
 class Memo:
     def __init__(self, title, author, content, date=None, attachments=None, tags=None):
@@ -29,22 +30,22 @@ class Memo:
             "tags": self.tags
         }
 
-#connect content from seperate file 
+# connect content from separate file
 with open("content.txt", "r", encoding="utf-8") as f:
     memo_content = f.read()
 
-#the memo information
+# create the Memo object
 memo = Memo(
     title="Lerner-Lam AI-Readiness Memo to M.Lehman & M.Bomar",
     author="Eva Lerner-Lam",
     content=memo_content,
     date="2025-12-20"
+)
 
-# attached photos
+# attach photos
 memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%201%20memo.png")
 memo.add_attachment("https://github.com/yasmin9123/ASCE-IT-Recommendations-Lerner-Lam_content-Korin_build-/raw/main/figure%202%20memo.png")
 
-#exporting as JSON
-import json
-with open("memo_2025_12_20.json", "w") as f:
+# export as JSON
+with open("memo_2025_12_20.json", "w", encoding="utf-8") as f:
     json.dump(memo.to_dict(), f, indent=2)
