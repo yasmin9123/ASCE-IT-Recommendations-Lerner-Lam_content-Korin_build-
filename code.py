@@ -30,7 +30,7 @@ class Memo:
         }
 
 #connect content from seperate file 
-with open("content/memo_2025_12_20.txt", "r", encoding="utf-8") as f:
+with open("content.txt", "r", encoding="utf-8") as f:
     memo_content = f.read()
 
 #the memo information
