@@ -1,6 +1,22 @@
+"""
+rag_app.py
+Hierarchical RAG using:
+- object_store/objects.jsonl (parents + children)
+- Chroma (children only)
+- SentenceTransformers embeddings
+- OpenAI for answering
+
+REQUIREMENTS:
+- OPENAI_API_KEY set as environment variable
+- folders:
+    Downloads/
+      rag_app.py
+      object_store/
+        objects.jsonl
+"""
+
 import os
 import json
-import hashlib
 from typing import Dict, List, Any
 
 import chromadb
@@ -15,30 +31,25 @@ from openai import OpenAI
 
 EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 CHROMA_DIR = "chroma_db"
-CHROMA_COLLECTION = "memo_children"
+COLLECTION_NAME = "memo_children"
 OBJECTS_PATH = os.path.join("object_store", "objects.jsonl")
 
-TOP_K_CHILDREN = 8
-EXPAND_PARENTS_FOR_TOP_N = 3
-MAX_CONTEXT_CHARS = 20000
-
+TOP_K = 8
+PARENT_EXPANSION = 3
 
 # =========================
 # SAFETY CHECK
 # =========================
 
 if not os.getenv("OPENAI_API_KEY"):
-    raise RuntimeError(
-        "OPENAI_API_KEY is not set.\n"
-        "Set it as an environment variable and restart the terminal."
-    )
+    raise RuntimeError("OPENAI_API_KEY environment variable is not set.")
 
 
 # =========================
-# OBJECT STORE
+# OBJECT STORE LOADING
 # =========================
 
-def load_objects_jsonl(path: str) -> List[Dict[str, Any]]:
+def load_objects(path: str) -> List[Dict[str, Any]]:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Missing file: {path}")
 
@@ -51,7 +62,7 @@ def load_objects_jsonl(path: str) -> List[Dict[str, Any]]:
     return objects
 
 
-def split_parents_children(objects):
+def split_parents_children(objects: List[Dict[str, Any]]):
     parents = {}
     children = []
 
@@ -64,23 +75,8 @@ def split_parents_children(objects):
     return parents, children
 
 
-def fingerprint_children(children):
-    blob = json.dumps(
-        [
-            {
-                "id": c["id"],
-                "parent_id": c["parent_id"],
-                "text": c["text"]
-            }
-            for c in children
-        ],
-        sort_keys=True
-    ).encode("utf-8")
-    return hashlib.sha256(blob).hexdigest()
-
-
 # =========================
-# CHROMA
+# CHROMA SETUP
 # =========================
 
 def get_collection():
@@ -88,41 +84,14 @@ def get_collection():
         path=CHROMA_DIR,
         settings=Settings(anonymized_telemetry=False)
     )
+
     return client.get_or_create_collection(
-        name=CHROMA_COLLECTION,
+        name=COLLECTION_NAME,
         metadata={"hnsw:space": "cosine"}
     )
 
 
-def rebuild_index_if_needed(collection, embedder, children):
-    fp = fingerprint_children(children)
-
-    try:
-        meta = collection.get(ids=["__meta__"], include=["metadatas"])
-        old_fp = meta["metadatas"][0].get("fingerprint")
-    except Exception:
-        old_fp = None
-
-    if fp == old_fp:
-        print("Chroma index is up to date (no re-embedding needed).")
-        return
-
-    print("Rebuilding Chroma index...")
-
-    client = chromadb.PersistentClient(
-        path=CHROMA_DIR,
-        settings=Settings(anonymized_telemetry=False)
-    )
-    try:
-        client.delete_collection(CHROMA_COLLECTION)
-    except Exception:
-        pass
-
-    collection = client.get_or_create_collection(
-        name=CHROMA_COLLECTION,
-        metadata={"hnsw:space": "cosine"}
-    )
-
+def index_children(collection, embedder, children):
     ids = []
     docs = []
     metas = []
@@ -144,25 +113,17 @@ def rebuild_index_if_needed(collection, embedder, children):
         metadatas=metas
     )
 
-    collection.upsert(
-        ids=["__meta__"],
-        documents=["index metadata"],
-        metadatas=[{"fingerprint": fp}]
-    )
-
-    print(f"Upserted {len(ids)} child objects into '{CHROMA_COLLECTION}'.")
-
 
 # =========================
 # RETRIEVAL
 # =========================
 
-def retrieve_children(collection, embedder, query, top_k):
+def retrieve_children(collection, embedder, query: str):
     q_emb = embedder.encode([query], normalize_embeddings=True).tolist()
 
     results = collection.query(
         query_embeddings=q_emb,
-        n_results=top_k,
+        n_results=TOP_K,
         include=["documents", "metadatas", "distances"]
     )
 
@@ -181,50 +142,37 @@ def build_context(hits, parents):
     hits = sorted(hits, key=lambda x: x["distance"])
 
     parent_ids = []
-    for h in hits[:EXPAND_PARENTS_FOR_TOP_N]:
+    for h in hits[:PARENT_EXPANSION]:
         pid = h["metadata"].get("parent_id")
         if pid and pid not in parent_ids:
             parent_ids.append(pid)
 
     parts = []
-    parts.append("=== RETRIEVED CHUNKS ===\n")
-
-    for i, h in enumerate(hits, 1):
-        parts.append(
-            f"[Chunk {i}] "
-            f"section={h['metadata'].get('section')} "
-            f"type={h['metadata'].get('type')}"
-        )
+    parts.append("=== RETRIEVED CHUNKS ===")
+    for h in hits:
         parts.append(h["text"])
         parts.append("")
 
-    parts.append("\n=== PARENT CONTEXT ===\n")
-
+    parts.append("=== PARENT CONTEXT ===")
     for pid in parent_ids:
-        p = parents.get(pid)
-        if p:
-            parts.append(f"[Section] {p.get('title')}")
-            parts.append(p.get("text", ""))
+        if pid in parents:
+            parts.append(parents[pid]["text"])
             parts.append("")
 
-    context = "\n".join(parts)
-    return context[:MAX_CONTEXT_CHARS]
+    return "\n".join(parts)
 
 
 # =========================
-# OPENAI
+# OPENAI CALL
 # =========================
 
-def answer_with_openai(query, context):
+def answer_with_openai(query: str, context: str) -> str:
     client = OpenAI()
 
     messages = [
         {
             "role": "system",
-            "content": (
-                "You are a helpful assistant. "
-                "Answer using ONLY the provided memo context when possible."
-            )
+            "content": "Answer using the provided context. If insufficient, say so."
         },
         {
             "role": "user",
@@ -232,13 +180,13 @@ def answer_with_openai(query, context):
         }
     ]
 
-    resp = client.chat.completions.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=messages,
         temperature=0.2
     )
 
-    return resp.choices[0].message.content
+    return response.choices[0].message.content
 
 
 # =========================
@@ -247,33 +195,37 @@ def answer_with_openai(query, context):
 
 def main():
     print("Loading objects from object store...")
-    objects = load_objects_jsonl(OBJECTS_PATH)
+    objects = load_objects(OBJECTS_PATH)
     parents, children = split_parents_children(objects)
     print(f"Loaded {len(parents)} parents and {len(children)} children.")
+
     print("Loading embedding model...")
     embedder = SentenceTransformer(EMBED_MODEL_NAME)
 
     print("Loading Chroma collection...")
     collection = get_collection()
 
-    rebuild_index_if_needed(collection, embedder, children)
+    if collection.count() == 0:
+        print("Indexing children into Chroma...")
+        index_children(collection, embedder, children)
+        print("Indexing complete.")
+    else:
+        print("Chroma index already exists.")
 
-    print("\nReady. Type a question (or type 'exit').\n")
+    print("\nReady. Type a question (or 'exit').\n")
 
     while True:
         query = input("Enter your question: ").strip()
-        if not query:
-            continue
-        if query.lower() in {"exit", "quit"}:
+        if query.lower() in ("exit", "quit"):
             break
 
-        hits = retrieve_children(collection, embedder, query, TOP_K_CHILDREN)
+        hits = retrieve_children(collection, embedder, query)
         context = build_context(hits, parents)
         answer = answer_with_openai(query, context)
 
-        print("\n=== ANSWER ===\n")
+        print("\n=== ANSWER ===")
         print(answer)
-        print("\n")
+        print("")
 
 
 if __name__ == "__main__":
