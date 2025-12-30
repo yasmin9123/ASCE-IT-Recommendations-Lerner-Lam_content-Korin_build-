@@ -250,7 +250,6 @@ def main():
     objects = load_objects_jsonl(OBJECTS_PATH)
     parents, children = split_parents_children(objects)
     print(f"Loaded {len(parents)} parents and {len(children)} children.")
-
     print("Loading embedding model...")
     embedder = SentenceTransformer(EMBED_MODEL_NAME)
 
