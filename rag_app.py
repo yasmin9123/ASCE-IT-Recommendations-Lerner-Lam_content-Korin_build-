@@ -243,11 +243,12 @@ def retrieve_children(collection, embedder: SentenceTransformer, query: str, top
     """Retrieve top child chunks from Chroma by semantic similarity."""
     q_emb = embedder.encode([query], normalize_embeddings=True).tolist()
 
-    results = collection.query(
-        query_embeddings=q_emb,
-        n_results=top_k,
-        include=["documents", "metadatas", "distances", "ids"]
-    )
+results = collection.query(
+    query_embeddings=q_emb,
+    n_results=top_k,
+    include=["documents", "metadatas", "distances"]
+)
+
 
     hits: List[Dict[str, Any]] = []
     for i in range(len(results["ids"][0])):
