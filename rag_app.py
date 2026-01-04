@@ -41,8 +41,12 @@ PARENT_EXPANSION = 3
 # SAFETY CHECK
 # =========================
 
-if not os.getenv("OPENAI_API_KEY"):
-    raise RuntimeError("OPENAI_API_KEY environment variable is not set.")
+def answer_with_openai(query: str, context: str) -> str:
+    if not os.getenv("OPENAI_API_KEY"):
+        raise RuntimeError("OPENAI_API_KEY environment variable is not set.")
+    client = OpenAI()
+    ...
+
 
 
 # =========================
